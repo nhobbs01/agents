@@ -1,2 +1,4 @@
-# agents
-Respository for all experiments with AI Agents
+# AI
+Respository for all experiments with AI
+
+Including AI Agents

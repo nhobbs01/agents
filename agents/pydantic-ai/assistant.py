@@ -15,29 +15,23 @@ logfire.configure()
 _ = load_dotenv()
 
 
-assitant_agent = Agent('gemini-1.5-pro',
+assitant_agent = Agent('gemini-1.5-flash',
                        retries=2,
                         system_prompt="""
                         You are a personal assistant.
                         You task a user's request and decide what action is required to fufull the user's request.
                         You have access to other agents to assist you.
                         You have access to a Todo List Manager to handle any requests relating to a todo list.
-                        You can pass the Todo List Manager an instruction using natural language.
-                        You cannot assit the user with any other tasks.
-                        Respond with the user's name""")
+                        Listen to the response from the Todo List Manager before answering back to the user.
+                       """)
 
-planning_agent = Agent('gemini-1.5-flash',
-                       retries=3,
-                       result_retries=3,
+response_agent = Agent('gemini-1.5-flash',
                         system_prompt="""
                         You are a personal assistant.
-                        You task a user's request and decide what action is required to fufull the user's request.
-                        Think about the user's request and plan steps to fufill the request.
-                        You have acess to the user's Todo List.
-                        You don't have any access to any other tools. 
-                        Only include instructions for tools you have access to.
-                        Keep your instructions consice.
-                        Do not prompt the user for more information.                      
+                        Review the steps and craft a response to the user from the tool actions taken.
+                        Think about the result from the Todo List Manager. 
+                        Use the result from the Todo list manager to guide your response.
+                        Explain to the user what action the agent has taken.
                         """)
 
 
@@ -59,13 +53,9 @@ async def manage_todo_list(ctx: RunContext, instruction: str) -> str:
     return result    
 
 async def main():
-    response = await planning_agent.run('Remind me to call my mum later at 6pm?')
-    result = await assitant_agent.run(
-        response.data,
-    )
-    print(result.all_messages())
-    print('Response:', result.data)
-    print(response.data)
+    response = await assitant_agent.run('Remind me to call my mum at 6pm instead?')
+    print(response.all_messages())
+    print('Response:', response.data)
 
 
 if __name__ == '__main__':

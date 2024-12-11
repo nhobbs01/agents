@@ -53,7 +53,7 @@ async def manage_todo_list(ctx: RunContext, instruction: str) -> str:
     return result    
 
 async def main():
-    response = await assitant_agent.run('Remind me to call my mum at 6pm instead?')
+    response = await assitant_agent.run('I need to take the bins out then clean the kitchen?')
     print(response.all_messages())
     print('Response:', response.data)
 
